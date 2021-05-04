@@ -9,25 +9,27 @@ import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
 #%matplotlib inline
+import numpy as np
 from sklearn.cluster import KMeans
 from sklearn import linear_model
+from sklearn.preprocessing import MinMaxScaler
 
+scaler = MinMaxScaler()
 
 # Loading the data
-shareprice=pd.read_csv("/Users/brendanmckenna/Dropbox/Projects/OG/Data/SharePricePostProcessed.csv")
+shareprice = pd.read_csv("/Users/brendanmckenna/Dropbox/Projects/OG/Data/SharePricePostProcessed.csv")
 shareprice["date"]=pd.to_datetime(shareprice['date'])
 master_df13=shareprice[shareprice["year"]>2012]
 
 ## 3.1. Cluster analysis
-# Divide data from Royal Dutch Shell into 6 groups using cluster analysis. 
-# Clustering is the task of grouping a set of objects based on degree of similarity. 
+# Clustering is the task of grouping a set of objects based on degree of similarity. Here, we divide data from Royal Dutch Shell into 6 groups using cluster analysis. 
 # Unsupervised Learning - Cluster analysis on Shell data
 shell=pd.DataFrame()
 shell=master_df13[master_df13['name']=="RDSB.L"]
 
 # Scale oil price to ensure it isn't influenced by the relative size of one axis.
-shell["oil_price_scaled"]=scaler.fit_transform(shell["oil_price"].to_frame())
-shell["cluster"] = KMeans(n_clusters=6, random_state=1).fit_predict(shell[["share_price_scaled","oil_price_scaled"]])
+shell["oil_price_scaled"] = scaler.fit_transform(shell["oil_price"].to_frame())
+shell["cluster"] = KMeans(n_clusters=4, random_state=1).fit_predict(shell[["share_price_scaled","oil_price_scaled"]])
 
 colors = ["baby blue", "amber", "scarlet", "grey","milk chocolate", "windows blue"]
 palette=sns.xkcd_palette(colors)
